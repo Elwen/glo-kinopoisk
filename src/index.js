@@ -21,7 +21,6 @@ function requesApi(method, url) {
       return;
     }
     const output = JSON.parse(request.responseText);
-    console.log(output);
     let inner = "";
     output.results.forEach(item => {
       let itemName = item.name || item.title;
