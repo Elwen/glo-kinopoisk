@@ -7,14 +7,9 @@ function apiSearch(e) {
   const server = `https://api.themoviedb.org/3/search/multi?api_key=cc4a12debd0f48352ad900be26638ef0&language=ru-RU&include_adult=false&query=${searchText}`;
   movies.innerHTML = "<div class='col-12'>Загрузка</div>";
 
-  fetch(server)
-    .then(value => {
-      if (value.status !== 200) {
-        return Promise.reject(value);
-      }
-      return value.json();
-    })
-    .then(output => {
+  requesApi(server)
+    .then(result => {
+      const output = JSON.parse(result);
       let inner = "";
       output.results.forEach(item => {
         const itemName = item.name || item.title;
@@ -24,10 +19,10 @@ function apiSearch(e) {
             }</span></div>`
           : "";
         const itemPoster = item.poster_path
-          ? `<img src="//image.tmdb.org/t/p/w500${
+          ? `<div class="embed-responsive-item"><img src="//image.tmdb.org/t/p/w500${
               item.poster_path
-            }" alt="${itemName}" class="img-fluid h-100">`
-          : "";
+            }" alt="${itemName}" class="img-fluid"></div>`
+          : '<div class="embed-responsive-item bg-light"></div>';
         let itemPremiereDate = "";
         let premiereDate = item.first_air_date || item.release_date;
         if (premiereDate) {
@@ -45,12 +40,10 @@ function apiSearch(e) {
             </p>`;
         }
         inner += `
-          <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-3 mb-sm-4">
+          <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-3">
             <div class="card h-100">
-              <div class="embed-responsive embed-responsive-2by3 card-img-top border-bottom">
-                <div class="embed-responsive-item bg-light">
-                ${itemPoster}
-                </div>
+              <div class="embed-responsive embed-responsive-1by1 card-img-top border-bottom">
+              ${itemPoster}
               </div>
               ${itemPopularity}
               <div class="card-body">
@@ -69,3 +62,21 @@ function apiSearch(e) {
 }
 
 searchForm.addEventListener("submit", apiSearch);
+
+function requesApi(url) {
+  return new Promise(function(resolve, reject) {
+    const request = new XMLHttpRequest();
+    request.open("GET", url);
+    request.addEventListener("load", () => {
+      if (request.status !== 200) {
+        reject({ status: request.status });
+        return;
+      }
+      resolve(request.response);
+    });
+    request.addEventListener("error", () => {
+      reject({ status: request.status });
+    });
+    request.send();
+  });
+}
