@@ -27,7 +27,7 @@ function apiSearch(e) {
           ? `<img src="//image.tmdb.org/t/p/w500${
               item.poster_path
             }" alt="${itemName}" class="img-fluid h-100">`
-          : "";
+          : "<div class='d-flex h-100 align-items-center justify-content-center text-muted'>Постер отсутствует</div>";
         let itemPremiereDate = "";
         let premiereDate = item.first_air_date || item.release_date;
         if (premiereDate) {
