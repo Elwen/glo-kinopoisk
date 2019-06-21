@@ -145,6 +145,9 @@ function showFullInfo() {
           <p>Премьера: ${formatDate(
             output.first_air_date || output.release_date
           )}</p>
+          <p>Жанр: ${
+            output.genres ? output.genres.map(g => ` ${g.name}`) : ""
+          }</p>
 
           ${
             output.last_episode_to_air
